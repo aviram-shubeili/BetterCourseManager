@@ -23,6 +23,7 @@ private:
     std::shared_ptr<RankedAVLNode<T>> left_son;
     int height;
     bool visited;
+    int rank;
 
 public:
     /**
@@ -126,6 +127,7 @@ RankedAVLNode<T>::RankedAVLNode(const RankedAVLNode<T> &other):
         left_son(nullptr),
         right_son(nullptr),
         height(0),
+        rank(other.rank), // TODO this is true?
         visited(false) { }
 
 template<typename T>
@@ -135,6 +137,7 @@ RankedAVLNode<T> &RankedAVLNode<T>::operator=(const RankedAVLNode<T> &other) {
     }
     data = other.data;
     key = other.key;
+    rank = other.rank;     // TODO is this true?
    // height = other.height;
     return *this;
 }
@@ -214,7 +217,8 @@ RankedAVLNode<T>::RankedAVLNode(ThreeKey key, std::shared_ptr<T> data) :
         father(nullptr),
         right_son(nullptr),
         left_son(nullptr),
-        height(0)
+        height(0),
+        rank(0)
 {
 }
 
