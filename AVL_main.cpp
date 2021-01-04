@@ -13,6 +13,7 @@
 #include <algorithm>
 
 
+
 int main(){
     RankedAVLTree<int> tree;
 
@@ -70,6 +71,12 @@ int main(){
     tree.insert(1,1);
     tree.insert(2,2);
     tree.detailedPrint();
+    std::cout << (tree.Select(1))->getKey() << std::endl;
+    std::cout << (tree.Select(3))->getKey() << std::endl;
+    std::cout << (tree.Select(5))->getKey() << std::endl;
+    std::cout << (tree.Select(7))->getKey() << std::endl;
+    std::cout << (tree.Select(7))->getKey() << std::endl;
+
     tree.clearTree();
 
     //basic LL not root change
@@ -428,7 +435,7 @@ int main(){
     tree.remove(5);
     tree.detailedPrint();
     tree.clearTree();
-/*
+
     std::vector<int> vector;
     for (int i=1; i<=100; i++) vector.push_back(i);
 
@@ -451,7 +458,7 @@ int main(){
         tree.detailedPrint();
         std::cout << '\n';
     }
-*/
+
     return 0;
 }
 

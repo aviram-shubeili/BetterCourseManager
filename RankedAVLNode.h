@@ -23,9 +23,9 @@ private:
     std::shared_ptr<RankedAVLNode<T>> left_son;
     int height;
     bool visited;
-    int rank;
 
 public:
+    int rank;
     /**
      * Description:
      *      Constructor.
@@ -108,7 +108,10 @@ public:
     bool getVisited() {
     return visited;
 }
-
+/**
+ * update rank of node (assuming sons ranks are updated) and return new rank
+ */
+    int updateRank();
 };
 
 /*
@@ -218,8 +221,22 @@ RankedAVLNode<T>::RankedAVLNode(ThreeKey key, std::shared_ptr<T> data) :
         right_son(nullptr),
         left_son(nullptr),
         height(0),
-        rank(0)
+        rank(1)
 {
+}
+
+template<typename T>
+int RankedAVLNode<T>::updateRank() {
+    rank = getRank(right_son) + getRank(left_son) + 1;
+    return rank;
+}
+
+
+// Rank Feature
+// return rank of node.
+template<typename T>
+int getRank(std::shared_ptr<RankedAVLNode<T>> node) {
+    return node == NULL ? 0 : node->rank;
 }
 
 
@@ -247,5 +264,11 @@ static int getNumSons(std::shared_ptr<RankedAVLNode<T>> node) {
     return sum;
 }
 
+int recursiveCalcRank(std::shared_ptr<RankedAVLNode<int>> node) {
+   if(node == nullptr) {
+       return 0;
+   }
+   return recursiveCalcRank(node->getLeftSon()) + recursiveCalcRank(node->getRightSon()) + 1;
+}
 
 #endif //BOOM_AVLNODE_H

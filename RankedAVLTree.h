@@ -95,11 +95,19 @@ private:
     *       none
     */
     void inOrder(std::shared_ptr<RankedAVLNode<T>> root);
+
+    /**
+     * Finding the K'th Element in subTree of node (sorted)
+     */
+    std::shared_ptr<RankedAVLNode<T>> Select(int k, std::shared_ptr<RankedAVLNode<T>> node);
+
+
+
 public:
     /**
      * Default c'tor - creates an empty AVL Tree.
      */
-     RankedAVLTree<T>();
+    RankedAVLTree<T>();
 
 
 
@@ -144,14 +152,29 @@ public:
         }
         detailedPrint(root->getLeftSon());
         std::cout << root->getKey() << " BF: " << getBF(root)
-        << " Height: " << root->getHeight() << std::endl;
+                  << " Height: " << root->getHeight();
+
+        // Check if Root's rank is true value
+        std::cout <<  "  || Rank: " << root->rank << "  Rank == subtreeSize : ";
+        int realRank = recursiveCalcRank(root);
+        if(realRank == root->rank) {
+            std::cout << "TRUE";
+        }
+        else {
+            std::cout << "FALSE  RealRank = " << realRank ;
+            throw BoomExceptions();
+        }
+
+
+        std::cout <<std::endl;
+
         detailedPrint(root->getRightSon());
     }
 
     void detailedPrint() {
         std::cout << "case:\n";
         detailedPrint(root);
-      //  std::cout << "\n";
+        //  std::cout << "\n";
     }
 
 // made for debugging when all we care is the keys
@@ -218,6 +241,17 @@ public:
      */
     void printTree();
 
+
+    // RankTree Features
+    /**
+     * Finding the K'th Element in Tree (sorted)
+     * Exceptions:
+     *      InvalidInput() if k is not in range of 1 <= k <= num_nodes
+     */
+    std::shared_ptr<RankedAVLNode<T>> Select(int k);
+
+
+
 };
 
 
@@ -250,6 +284,8 @@ std::shared_ptr<RankedAVLNode<T>> RankedAVLTree<T>::LL(std::shared_ptr<RankedAVL
     A->setFather(C->getFather());
     C->setFather(A);
 
+    C->updateRank();
+    A->updateRank();
     // update Heights!
 
     updateHeight(C);
@@ -270,6 +306,9 @@ std::shared_ptr<RankedAVLNode<T>> RankedAVLTree<T>::RR(std::shared_ptr<RankedAVL
     A->setFather(B->getFather());
     B->setFather(A);
 
+    // update Ranks!
+    B->updateRank();
+    A->updateRank();
     // update Heights!
     updateHeight(B);
     updateHeight(A);
@@ -405,7 +444,8 @@ void RankedAVLTree<T>::insert(std::shared_ptr<RankedAVLNode<T>> new_node, std::s
     // Done with insertion!
 
     balanceTree(current_root);
-
+    // update Rank and Height on the insertion path.
+    current_root->updateRank();
     updateHeight(current_root);
 }
 
@@ -510,8 +550,10 @@ void RankedAVLTree<T>::removeNode(std::shared_ptr<RankedAVLNode<T>> v) {
                 v->getFather()->setRightSon(nullptr);
             }
             std::shared_ptr<RankedAVLNode<T>> A = v->getFather();
+            // balancing and updating rank and height in deletion path.
             while(A) {
                 balanceTree(A);
+                A->updateRank();
                 updateHeight(A);
                 A = A->getFather();
             }
@@ -555,8 +597,10 @@ void RankedAVLTree<T>::removeNode(std::shared_ptr<RankedAVLNode<T>> v) {
         }
         son->setFather(v->getFather());
         std::shared_ptr<RankedAVLNode<T>> A = v->getFather();
+        // balancing and updating rank and height in deletion path.
         while(A) {
             balanceTree(A);
+            A->updateRank();
             updateHeight(A);
             A = A->getFather();
         }
@@ -572,6 +616,27 @@ void RankedAVLTree<T>::removeNode(std::shared_ptr<RankedAVLNode<T>> v) {
     }
 }
 
+template<typename T>
+std::shared_ptr<RankedAVLNode<T>> RankedAVLTree<T>::Select(int k) {
+    if( k <= 0 or k > getRank(root)) {
+        throw InvalidInput();
+    }
+    return Select(k,root);
+}
+
+template<typename T>
+std::shared_ptr<RankedAVLNode<T>> RankedAVLTree<T>::Select(int k, std::shared_ptr<RankedAVLNode<T>> node) {
+    if(getRank(node->getLeftSon()) == k-1) {
+        return node;
+    }
+    if(getRank(node->getLeftSon()) > k-1) {
+        return Select(k,node->getLeftSon());
+    }
+    else {
+    // (getRank(node->getLeftSon()) < k-1)
+        return Select(k- getRank(node->getLeftSon()) -1, node->getRightSon());
+    }
+}
 
 
 #endif //BOOM_AVL_H
