@@ -16,25 +16,27 @@ class HashMap {
 private:
     //array of ptrs to lists
     std::shared_ptr<NodeHash<T>>* nodePtrArray;
-    long size;
-    long used_current_keys;
-    long decodeKey(long key);
-    void resizeMap(long new_size);
+    int size; // m
+    int used_current_keys; // n
+    int decodeKey(int key);
+    void resizeMap(int new_size);
 public:
     HashMap<T>();
     ~HashMap<T>();
 
+    int getUsedCurrentKeys() const;
+
     //cleans an array of chains
-    void cleanMap(long n_size, std::shared_ptr<NodeHash<T>>* n_nodePtrArray);
+    void cleanMap(int n_size, std::shared_ptr<NodeHash<T>>* n_nodePtrArray);
 
     //will return nullptr if already exists
-    std::shared_ptr<NodeHash<T>> insert(long key);
+    std::shared_ptr<NodeHash<T>> insert(int key);
 
     //will return nullptr if desnt exists
-    std::shared_ptr<NodeHash<T>> find(long key);
+    std::shared_ptr<NodeHash<T>> find(int key);
 
     //will return false if couldnt find the key
-    bool deleteNode(long key);
+    bool deleteNode(int key);
 
     //debug func
     void printMap();
@@ -54,7 +56,7 @@ HashMap<T>::HashMap(): size(STARTING_SIZE),used_current_keys(0)
     nodePtrArray = new std::shared_ptr<NodeHash<T>>[STARTING_SIZE];
 }
 template< typename T>
-void HashMap<T>::cleanMap(long n_size, std::shared_ptr<NodeHash<T>>* n_nodePtrArray)
+void HashMap<T>::cleanMap(int n_size, std::shared_ptr<NodeHash<T>>* n_nodePtrArray)
 {
     //loop and clear all chains in the map
     for (int i = 0; i < n_size; ++i) {
@@ -81,12 +83,12 @@ HashMap<T>::~HashMap()
     delete [] nodePtrArray;
 }
 template< typename T>
-long HashMap<T>::decodeKey(long key) {
+int HashMap<T>::decodeKey(int key) {
     // golden value
     double a = (sqrt(5)-1)/2;
     double  temp = a * (double)key;
     double m = (double) size;
-    long decoded_key =  (long)(m * (temp - (long)temp));
+    int decoded_key =  (int)(m * (temp - (int)temp));
     //safety check
     if( decoded_key == size)//only if really close to max
     {
@@ -95,7 +97,7 @@ long HashMap<T>::decodeKey(long key) {
     return decoded_key;
 }
 template< typename T>
-std::shared_ptr<NodeHash<T>> HashMap<T>::insert(long key)
+std::shared_ptr<NodeHash<T>> HashMap<T>::insert(int key)
 {
     //check if already exists
     if(find(key) != nullptr)
@@ -109,7 +111,7 @@ std::shared_ptr<NodeHash<T>> HashMap<T>::insert(long key)
         resizeMap(size * RESIZE_ON);
     }
 
-    long decoded_key = decodeKey(key);
+    int decoded_key = decodeKey(key);
     std::shared_ptr<NodeHash<T>> node(new NodeHash<T>(key));
     if(nodePtrArray[decoded_key] == nullptr)//if first cell is empty
     {
@@ -127,9 +129,9 @@ std::shared_ptr<NodeHash<T>> HashMap<T>::insert(long key)
     return node;
 }
 template< typename T>
-std::shared_ptr<NodeHash<T>> HashMap<T>::find(long key)
+std::shared_ptr<NodeHash<T>> HashMap<T>::find(int key)
 {
-    long decoded_key = decodeKey(key);
+    int decoded_key = decodeKey(key);
     std::shared_ptr<NodeHash<T>> temp = nodePtrArray[decoded_key];
     while (true)
     {
@@ -145,7 +147,7 @@ std::shared_ptr<NodeHash<T>> HashMap<T>::find(long key)
     }
 }
 template< typename T>
-bool HashMap<T>::deleteNode(long key)
+bool HashMap<T>::deleteNode(int key)
 {
     std::shared_ptr<NodeHash<T>> target = find(key);
     if(target == nullptr)
@@ -159,7 +161,7 @@ bool HashMap<T>::deleteNode(long key)
         resizeMap(size / RESIZE_ON);
     }
 
-    long decoded_key = decodeKey(key);
+    int decoded_key = decodeKey(key);
     if(target->getPrev() == nullptr)//if deleting the first in the chain
     {
         if(target->getNext() != nullptr)
@@ -182,13 +184,13 @@ bool HashMap<T>::deleteNode(long key)
     return true;
 }
 template< typename T>
-void HashMap<T>::resizeMap(long new_size)
+void HashMap<T>::resizeMap(int new_size)
 {
     //allocate new array:
     std::shared_ptr<NodeHash<T>>* new_nodePtrArray = new std::shared_ptr<NodeHash<T>>[new_size];
     //save old map
     std::shared_ptr<NodeHash<T>>* old_map = nodePtrArray;
-    long old_size = size;
+    int old_size = size;
 
     size = new_size;
     nodePtrArray = new_nodePtrArray;
@@ -237,6 +239,11 @@ void HashMap<T>::printMap() {
         }
         std::cout<<"\n";
     }
+}
+
+template<typename T>
+int HashMap<T>::getUsedCurrentKeys() const {
+    return used_current_keys;
 }
 
 #endif //BOOM2_HASHMAP_H

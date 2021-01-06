@@ -34,7 +34,7 @@ public:
      * Exceptions:
      *      std::bad_alloc() - allocation problem
      */
-    explicit RankedAVLNode<T>(ThreeKey key, std::shared_ptr<T> data);
+    explicit RankedAVLNode<T>(ThreeKey key, std::shared_ptr<T> data=nullptr);
 
     /**
      * Description:
@@ -263,12 +263,12 @@ static int getNumSons(std::shared_ptr<RankedAVLNode<T>> node) {
     }
     return sum;
 }
-
+/*
 int recursiveCalcRank(std::shared_ptr<RankedAVLNode<int>> node) {
    if(node == nullptr) {
        return 0;
    }
    return recursiveCalcRank(node->getLeftSon()) + recursiveCalcRank(node->getRightSon()) + 1;
 }
-
+*/
 #endif //BOOM_AVLNODE_H

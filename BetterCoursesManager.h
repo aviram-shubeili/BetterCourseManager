@@ -4,10 +4,25 @@
 
 
 #include "Auxiliaries.h"
-
+#include "RankedAVLTree.h"
+#include "HashMap.h"
+typedef std::shared_ptr<HashMap<HashMap<RankedAVLNode<int>>>> hash_hash_avl_p;
+typedef std::shared_ptr<NodeHash<HashMap<RankedAVLNode<int>>>> nhash_hash_avl_p;
+typedef std::shared_ptr<NodeHash<RankedAVLNode<int>>> nhash_avl_p;
+typedef std::shared_ptr<HashMap<RankedAVLNode<int>>> hash_avl_p;
+typedef std::shared_ptr<RankedAVLNode<int>> avln_p;
 class BetterCoursesManager {
-int s;
+
+    std::shared_ptr<HashMap<HashMap<RankedAVLNode<int>>>> courses_map;
+    std::shared_ptr<RankedAVLTree<int>> lectures_tree;
+
+
 public:
+
+    BetterCoursesManager();
+
+    ~BetterCoursesManager() = default;
+
     StatusType addCourse(int courseID);
 
     StatusType removeCourse(int courseID);

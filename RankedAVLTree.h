@@ -155,7 +155,7 @@ public:
         detailedPrint(root->getLeftSon());
         std::cout << root->getKey() << " BF: " << getBF(root)
                   << " Height: " << root->getHeight();
-
+/*
         // Check if Root's rank is true value
         std::cout <<  "  || Rank: " << root->rank << "  Rank == subtreeSize : ";
         int realRank = recursiveCalcRank(root);
@@ -166,7 +166,7 @@ public:
             std::cout << "FALSE  RealRank = " << realRank ;
             throw BoomExceptions();
         }
-
+*/
 
         std::cout <<std::endl;
 
@@ -195,6 +195,7 @@ public:
     void insert(ThreeKey key, int data) { insert(key, nullptr); }
 #endif
 
+
     /**
   * Description:
   *    create a Node containing data and key and insert it to the tree
@@ -205,7 +206,7 @@ public:
   *     NodeAlreadyExists - if key already exists in tree
   */
 
-    void insert(ThreeKey key, std::shared_ptr<T> data);
+    std::shared_ptr<RankedAVLNode<T>> insert(ThreeKey key, std::shared_ptr<T> data);
 
     /**
   * Description:
@@ -391,7 +392,7 @@ std::shared_ptr<RankedAVLNode<T>> RankedAVLTree<T>::find(ThreeKey key, std::shar
 }
 
 template<typename T>
-void RankedAVLTree<T>::insert(ThreeKey key, std::shared_ptr<T> data) {
+std::shared_ptr<RankedAVLNode<T>> RankedAVLTree<T>::insert(ThreeKey key, std::shared_ptr<T> data) {
 
     // node with same key already in the tree
     if(root != nullptr and find(key,root) != nullptr) {
@@ -403,7 +404,7 @@ void RankedAVLTree<T>::insert(ThreeKey key, std::shared_ptr<T> data) {
     if(root == nullptr) {
         root = new_node;
         min_node = new_node;
-        return;
+        return new_node;
     }
     // update min_node ptr.
     if(min_node->getKey() > new_node->getKey()) {
@@ -411,6 +412,7 @@ void RankedAVLTree<T>::insert(ThreeKey key, std::shared_ptr<T> data) {
     }
     insert(new_node,root);
 
+    return new_node;
 }
 
 template<typename T>
