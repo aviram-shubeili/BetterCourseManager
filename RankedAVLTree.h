@@ -137,6 +137,7 @@ public:
      */
     std::shared_ptr<RankedAVLNode<T>> getRoot() ;
 
+    // Made for debugging.
     void inOrderPTRS(std::shared_ptr<RankedAVLNode<T>> subroot) {
         if(subroot == nullptr) {
             return;
@@ -146,6 +147,7 @@ public:
         inOrderPTRS(subroot->getRightSon());
     }
 
+    // Made for debugging.
     void detailedPrint(std::shared_ptr<RankedAVLNode<int>> root) {
         if(root == nullptr) {
             return;
