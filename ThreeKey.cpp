@@ -19,11 +19,11 @@ bool ThreeKey::operator<(const ThreeKey &rhs) const {
         return true;
     if (rhs.views < views)
         return false;
-    if (course_id < rhs.course_id)
+    if (course_id > rhs.course_id)
         return true;
-    if (rhs.course_id < course_id)
+    if (rhs.course_id > course_id)
         return false;
-    return class_id < rhs.class_id;
+    return class_id > rhs.class_id;
 }
 
 bool ThreeKey::operator>(const ThreeKey &rhs) const {
