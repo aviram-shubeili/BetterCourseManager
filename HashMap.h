@@ -6,7 +6,7 @@
 #define BOOM2_HASHMAP_H
 #include "NodeHash.h"
 #define STARTING_SIZE 100
-#define RESIZE_ON 10
+#define RESIZE_ON 4
 
 /**
  * Generic Dynamic HashMap (rehash) using chain Hashing
